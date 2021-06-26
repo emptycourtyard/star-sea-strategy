@@ -1,0 +1,75 @@
+'''
+#elemntary rotation matrixes
+def Rx(theta):
+  return np.matrix([[ 1, 0           , 0           ],
+                   [ 0, m.cos(theta),-m.sin(theta)],
+                   [ 0, m.sin(theta), m.cos(theta)]])
+  
+def Ry(theta):
+  return np.matrix([[ m.cos(theta), 0, m.sin(theta)],
+                   [ 0           , 1, 0           ],
+                   [-m.sin(theta), 0, m.cos(theta)]])
+  
+def Rz(theta):
+  return np.matrix([[ m.cos(theta), -m.sin(theta), 0 ],
+                   [ m.sin(theta), m.cos(theta) , 0 ],
+                   [ 0           , 0            , 1 ]])
+
+def Rxyz_helper(V):
+  x = V[0]
+  y = V[1]
+  z = V[2]
+  # theta relative to axis
+  ax = m.atan2(m.sqrt(y**2+z**2), x);
+  ay = m.atan2(m.sqrt(z**2+x**2), y);
+  az = m.atan2(m.sqrt(x**2+y**2), z);
+  return np.array([ax,ay,az])
+
+print(Rxyz_helper(np.array([1,1,1])))
+
+def Rxyz(V):
+  x = V[0]
+  y = V[1]
+  z = V[2]
+  
+  if x == 0:
+    x += 1
+  
+  x_hat = Rxyz_helper(np.array([0,y,z]))[0]
+  
+  y_hat = Rxyz_helper(np.array([x,0,z]))[0]
+  if z > 0:
+    y_hat = -y_hat
+  z_hat = Rxyz_helper(np.array([x,y,0]))[0]
+  if y < 0:
+    z_hat = -z_hat
+  if x < 0:
+    z_hat = -m.fabs(z_hat-m.pi)
+  return np.array([x_hat,y_hat,z_hat])
+
+print(Rxyz(np.array([0,1,1])))
+
+
+
+v = np.array([-6,25,6])
+K = Rxyz(v)
+print(K)
+
+
+# rotates in order x, y, then z
+phi = K[0]
+theta = K[1]
+psi = K[2]
+R = Rz(psi) * Ry(theta) * Rx(phi)
+#print(np.round(R, decimals=3))
+
+V = np.matmul(R, np.array([1,0,0]))
+print(np.round(V, decimals=9))
+
+'''
+
+
+
+
+
+
